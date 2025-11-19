@@ -268,6 +268,9 @@
                   <span>Kuota {{ $featuredJurusan->kuota }}</span>
                 </div>
               </div>
+              
+
+              
               <div class="card-content">
                 <div class="program-category">{{ $featuredJurusan->kode }}</div>
                 <h3>{{ $featuredJurusan->nama }}</h3>
@@ -283,6 +286,9 @@
                 <p>{{ $deskripsiJurusan[$featuredJurusan->kode] ?? 'Program keahlian berkualitas dengan kuota ' . $featuredJurusan->kuota . ' siswa.' }}</p>
               </div>
             </div>
+
+
+            
             @endif
 
             <div class="programs-list">

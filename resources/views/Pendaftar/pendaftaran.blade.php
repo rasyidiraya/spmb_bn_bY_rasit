@@ -76,11 +76,11 @@
                   </div>
                   <div class="col-md-6 mb-3">
                     <label class="form-label">NIK</label>
-                    <input type="text" name="nik" class="form-control" value="{{ old('nik', $oldData->nik ?? '') }}" required>
+                    <input type="number" name="nik" class="form-control" value="{{ old('nik', $oldData->nik ?? '') }}" required>
                   </div>
                   <div class="col-md-6 mb-3">
                     <label class="form-label">NISN</label>
-                    <input type="text" name="nisn" class="form-control" value="{{ old('nisn', $oldData->nisn ?? '') }}" placeholder="Opsional">
+                    <input type="number" name="nisn" class="form-control" value="{{ old('nisn', $oldData->nisn ?? '') }}" placeholder="Opsional">
                   </div>
                   <div class="col-md-6 mb-3">
                     <label class="form-label">Tempat Lahir</label>
@@ -135,11 +135,11 @@
                   </div>
                   <div class="col-md-6 mb-3">
                     <label class="form-label">No. HP Ayah</label>
-                    <input type="tel" name="hp_ayah" class="form-control" value="{{ old('hp_ayah', $oldData->hp_ayah ?? '') }}" required>
+                    <input type="number" name="hp_ayah" class="form-control" value="{{ old('hp_ayah', $oldData->hp_ayah ?? '') }}" required>
                   </div>
                   <div class="col-md-6 mb-3">
                     <label class="form-label">No. HP Ibu</label>
-                    <input type="tel" name="hp_ibu" class="form-control" value="{{ old('hp_ibu', $oldData->hp_ibu ?? '') }}" required>
+                    <input type="number" name="hp_ibu" class="form-control" value="{{ old('hp_ibu', $oldData->hp_ibu ?? '') }}" required>
                   </div>
                 </div>
               </div>
@@ -154,7 +154,7 @@
                   </div>
                   <div class="col-md-6 mb-3">
                     <label class="form-label">NPSN</label>
-                    <input type="text" name="npsn" class="form-control" value="{{ old('npsn', $oldData->npsn ?? '') }}" required>
+                    <input type="number" name="npsn" class="form-control" value="{{ old('npsn', $oldData->npsn ?? '') }}" required>
                   </div>
                   <div class="col-md-12 mb-3">
                     <label class="form-label">Alamat Sekolah</label>
