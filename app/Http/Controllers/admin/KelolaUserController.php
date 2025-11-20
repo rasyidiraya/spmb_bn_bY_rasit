@@ -15,6 +15,12 @@ class KelolaUserController extends Controller
         return view('admin.kelola-user.index', compact('users'));
     }
 
+    public function pendaftar()
+    {
+        $users = Pengguna::where('role', 'pendaftar')->get();
+        return view('admin.kelola-user.pendaftar', compact('users'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -68,6 +74,20 @@ class KelolaUserController extends Controller
     public function toggleStatus($id)
     {
         $user = Pengguna::findOrFail($id);
+        
+        // Cek jika user mencoba menonaktifkan dirinya sendiri
+        if ($user->id == auth('admin')->id()) {
+            return back()->with('error', 'Tidak dapat menonaktifkan akun Anda sendiri');
+        }
+        
+        // Cek jika ini admin terakhir yang aktif
+        if ($user->role == 'admin' && $user->aktif) {
+            $activeAdminCount = Pengguna::where('role', 'admin')->where('aktif', true)->count();
+            if ($activeAdminCount <= 1) {
+                return back()->with('error', 'Tidak dapat menonaktifkan admin terakhir');
+            }
+        }
+        
         $user->aktif = !$user->aktif;
         $user->save();
         

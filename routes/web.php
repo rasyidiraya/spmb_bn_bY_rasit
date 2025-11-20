@@ -75,6 +75,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'role:admin', 
     
     // Kelola User
     Route::get('/kelola-user', [App\Http\Controllers\Admin\KelolaUserController::class, 'index'])->name('kelola-user');
+    Route::get('/kelola-user/pendaftar', [App\Http\Controllers\Admin\KelolaUserController::class, 'pendaftar'])->name('kelola-user.pendaftar');
     Route::post('/kelola-user', [App\Http\Controllers\Admin\KelolaUserController::class, 'store'])->name('kelola-user.store');
     Route::put('/kelola-user/{id}', [App\Http\Controllers\Admin\KelolaUserController::class, 'update'])->name('kelola-user.update');
     Route::patch('/kelola-user/{id}/toggle-status', [App\Http\Controllers\Admin\KelolaUserController::class, 'toggleStatus'])->name('kelola-user.toggle-status');

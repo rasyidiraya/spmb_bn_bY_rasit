@@ -4,7 +4,7 @@
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Kelola User</h1>
-        <button class="btn btn-primary" data-toggle="modal" data-target="#addModal">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModal">
             <i class="fas fa-plus"></i> Tambah User
         </button>
     </div>
@@ -12,6 +12,15 @@
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
             <button type="button" class="close" data-dismiss="alert">
                 <span>&times;</span>
             </button>
@@ -31,6 +40,7 @@
                             <th>Nama</th>
                             <th>Email</th>
                             <th>HP</th>
+                            <th>Password</th>
                             <th>Role</th>
                             <th>Status</th>
                             <th>Aksi</th>
@@ -43,6 +53,9 @@
                             <td>{{ $user->nama }}</td>
                             <td>{{ $user->email }}</td>
                             <td>{{ $user->hp }}</td>
+                            <td>
+                                <span class="text-muted">••••••••</span>
+                            </td>
                             <td>
                                 <span class="badge badge-info">{{ strtoupper($user->role) }}</span>
                             </td>
@@ -96,6 +109,15 @@
             <form method="POST" action="{{ route('admin.kelola-user.store') }}">
                 @csrf
                 <div class="modal-body">
+                    @if($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <div class="form-group">
                         <label>Nama</label>
                         <input type="text" class="form-control" name="nama" required>
@@ -110,7 +132,14 @@
                     </div>
                     <div class="form-group">
                         <label>Password</label>
-                        <input type="password" class="form-control" name="password" required>
+                        <div class="input-group">
+                            <input type="password" class="form-control" name="password" id="password" required>
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('password')">
+                                    <i class="fas fa-eye" id="password-icon"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label>Role</label>
@@ -160,7 +189,14 @@
                     </div>
                     <div class="form-group">
                         <label>Password <small>(kosongkan jika tidak ingin mengubah)</small></label>
-                        <input type="password" class="form-control" name="password">
+                        <div class="input-group">
+                            <input type="password" class="form-control" name="password" id="edit_password">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('edit_password')">
+                                    <i class="fas fa-eye" id="edit_password-icon"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label>Role</label>
@@ -181,7 +217,32 @@
     </div>
 </div>
 
+@endsection
+
+@push('scripts')
 <script>
+$(document).ready(function() {
+    // Auto show modal jika ada error
+    @if($errors->any())
+        $('#addModal').modal('show');
+    @endif
+});
+
+function togglePassword(fieldId) {
+    const field = document.getElementById(fieldId);
+    const icon = document.getElementById(fieldId + '-icon');
+    
+    if (field.type === 'password') {
+        field.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        field.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+
 function editUser(id, nama, email, hp, role) {
     document.getElementById('editForm').action = '{{ url("admin/kelola-user") }}/' + id;
     document.getElementById('edit_nama').value = nama;
@@ -191,4 +252,4 @@ function editUser(id, nama, email, hp, role) {
     $('#editModal').modal('show');
 }
 </script>
-@endsection
+@endpush

@@ -76,20 +76,11 @@
     <!-- Bootstrap core JavaScript-->
     <script src="{{ asset('assets2/vendor/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('assets2/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    
-    <!-- Initialize Bootstrap components -->
+    <!-- Bootstrap CDN Fallback -->
     <script>
-    $(document).ready(function() {
-        // Initialize collapse functionality
-        $('.collapse').collapse();
-        
-        // Prevent hash in URL for dropdown links
-        $('[data-toggle="collapse"]').on('click', function(e) {
-            e.preventDefault();
-            var target = $(this).attr('data-target');
-            $(target).collapse('toggle');
-        });
-    });
+        if (typeof $.fn.modal === 'undefined') {
+            document.write('<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"><\/script>');
+        }
     </script>
 
     <!-- Core plugin JavaScript-->
@@ -107,7 +98,7 @@
     <script src="{{ asset('assets2/js/demo/chart-area-demo.js') }}"></script>
     <script src="{{ asset('assets2/js/demo/chart-pie-demo.js') }}"></script>
     
-
+    @stack('scripts')
 
 </body>
 

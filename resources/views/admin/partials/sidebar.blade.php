@@ -55,6 +55,13 @@
             <span>Kelola User</span>
         </a>
     </li>
+    
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('admin.kelola-user.pendaftar') }}">
+            <i class="fas fa-fw fa-user-graduate"></i>
+            <span>Kelola User Pendaftar</span>
+        </a>
+    </li>
 
 
 
