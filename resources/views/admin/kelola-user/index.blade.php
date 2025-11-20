@@ -3,9 +3,9 @@
 @section('content-admin')
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Master Data Gelombang</h1>
+        <h1 class="h3 mb-0 text-gray-800">Kelola User</h1>
         <button class="btn btn-primary" data-toggle="modal" data-target="#addModal">
-            <i class="fas fa-plus"></i> Tambah Gelombang
+            <i class="fas fa-plus"></i> Tambah User
         </button>
     </div>
 
@@ -18,64 +18,55 @@
         </div>
     @endif
 
-    @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ session('error') }}
-            <button type="button" class="close" data-dismiss="alert">
-                <span>&times;</span>
-            </button>
-        </div>
-    @endif
-
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Data Gelombang Pendaftaran</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Data User</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Nama Gelombang</th>
-                            <th>Tanggal Mulai</th>
-                            <th>Tanggal Selesai</th>
-                            <th>Biaya Daftar</th>
-                            <th>Tahun</th>
+                            <th>Nama</th>
+                            <th>Email</th>
+                            <th>HP</th>
+                            <th>Role</th>
                             <th>Status</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($gelombang as $index => $item)
+                        @foreach($users as $index => $user)
                         <tr>
                             <td>{{ $index + 1 }}</td>
-                            <td>{{ $item->nama }}</td>
-                            <td>{{ \Carbon\Carbon::parse($item->tgl_mulai)->format('d F Y') }}</td>
-                            <td>{{ \Carbon\Carbon::parse($item->tgl_selesai)->format('d F Y') }}</td>
-                            <td>Rp {{ number_format($item->biaya_daftar, 0, ',', '.') }}</td>
-                            <td>{{ $item->tahun }}</td>
+                            <td>{{ $user->nama }}</td>
+                            <td>{{ $user->email }}</td>
+                            <td>{{ $user->hp }}</td>
                             <td>
-                                @if($item->status === 'aktif')
+                                <span class="badge badge-info">{{ strtoupper($user->role) }}</span>
+                            </td>
+                            <td>
+                                @if($user->aktif)
                                     <span class="badge badge-success">AKTIF</span>
                                 @else
                                     <span class="badge badge-secondary">NONAKTIF</span>
                                 @endif
                             </td>
                             <td>
-                                <button class="btn btn-sm btn-info" onclick="editGelombang({{ $item->id }}, '{{ $item->nama }}', '{{ $item->tgl_mulai }}', '{{ $item->tgl_selesai }}', {{ $item->biaya_daftar }}, {{ $item->tahun }})">
+                                <button class="btn btn-sm btn-info" onclick="editUser({{ $user->id }}, '{{ $user->nama }}', '{{ $user->email }}', '{{ $user->hp }}', '{{ $user->role }}')">
                                     <i class="fas fa-edit"></i>
                                 </button>
                                 
-                                <form method="POST" action="{{ route('admin.master.gelombang.toggle-status', $item->id) }}" style="display: inline;">
+                                <form method="POST" action="{{ route('admin.kelola-user.toggle-status', $user->id) }}" style="display: inline;">
                                     @csrf
                                     @method('PATCH')
-                                    <button type="submit" class="btn btn-sm {{ $item->status === 'aktif' ? 'btn-warning' : 'btn-success' }}">
-                                        {{ $item->status === 'aktif' ? 'Nonaktifkan' : 'Aktifkan' }}
+                                    <button type="submit" class="btn btn-sm {{ $user->aktif ? 'btn-warning' : 'btn-success' }}">
+                                        {{ $user->aktif ? 'Nonaktifkan' : 'Aktifkan' }}
                                     </button>
                                 </form>
                                 
-                                <form method="POST" action="{{ route('admin.master.gelombang.delete', $item->id) }}" style="display: inline;" onsubmit="return confirm('Yakin ingin menghapus gelombang ini?')">
+                                <form method="POST" action="{{ route('admin.kelola-user.destroy', $user->id) }}" style="display: inline;" onsubmit="return confirm('Yakin ingin menghapus user ini?')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger">
@@ -97,33 +88,39 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Tambah Gelombang</h5>
+                <h5 class="modal-title">Tambah User</h5>
                 <button type="button" class="close" data-dismiss="modal">
                     <span>&times;</span>
                 </button>
             </div>
-            <form method="POST" action="{{ route('admin.master.gelombang.store') }}">
+            <form method="POST" action="{{ route('admin.kelola-user.store') }}">
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>Nama Gelombang</label>
+                        <label>Nama</label>
                         <input type="text" class="form-control" name="nama" required>
                     </div>
                     <div class="form-group">
-                        <label>Tanggal Mulai</label>
-                        <input type="date" class="form-control" name="tgl_mulai" required>
+                        <label>Email</label>
+                        <input type="email" class="form-control" name="email" required>
                     </div>
                     <div class="form-group">
-                        <label>Tanggal Selesai</label>
-                        <input type="date" class="form-control" name="tgl_selesai" required>
+                        <label>HP</label>
+                        <input type="text" class="form-control" name="hp" required>
                     </div>
                     <div class="form-group">
-                        <label>Biaya Pendaftaran</label>
-                        <input type="number" class="form-control" name="biaya_daftar" required>
+                        <label>Password</label>
+                        <input type="password" class="form-control" name="password" required>
                     </div>
                     <div class="form-group">
-                        <label>Tahun</label>
-                        <input type="number" class="form-control" name="tahun" value="{{ date('Y') }}" required>
+                        <label>Role</label>
+                        <select class="form-control" name="role" required>
+                            <option value="">Pilih Role</option>
+                            <option value="admin">Admin</option>
+                            <option value="verifikator_adm">Verifikator Administrasi</option>
+                            <option value="keuangan">Keuangan</option>
+                            <option value="kepsek">Kepala Sekolah</option>
+                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -140,7 +137,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Edit Gelombang</h5>
+                <h5 class="modal-title">Edit User</h5>
                 <button type="button" class="close" data-dismiss="modal">
                     <span>&times;</span>
                 </button>
@@ -150,24 +147,29 @@
                 @method('PUT')
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>Nama Gelombang</label>
+                        <label>Nama</label>
                         <input type="text" class="form-control" name="nama" id="edit_nama" required>
                     </div>
                     <div class="form-group">
-                        <label>Tanggal Mulai</label>
-                        <input type="date" class="form-control" name="tgl_mulai" id="edit_tgl_mulai" required>
+                        <label>Email</label>
+                        <input type="email" class="form-control" name="email" id="edit_email" required>
                     </div>
                     <div class="form-group">
-                        <label>Tanggal Selesai</label>
-                        <input type="date" class="form-control" name="tgl_selesai" id="edit_tgl_selesai" required>
+                        <label>HP</label>
+                        <input type="text" class="form-control" name="hp" id="edit_hp" required>
                     </div>
                     <div class="form-group">
-                        <label>Biaya Pendaftaran</label>
-                        <input type="number" class="form-control" name="biaya_daftar" id="edit_biaya_daftar" required>
+                        <label>Password <small>(kosongkan jika tidak ingin mengubah)</small></label>
+                        <input type="password" class="form-control" name="password">
                     </div>
                     <div class="form-group">
-                        <label>Tahun</label>
-                        <input type="number" class="form-control" name="tahun" id="edit_tahun" required>
+                        <label>Role</label>
+                        <select class="form-control" name="role" id="edit_role" required>
+                            <option value="admin">Admin</option>
+                            <option value="verifikator_adm">Verifikator Administrasi</option>
+                            <option value="keuangan">Keuangan</option>
+                            <option value="kepsek">Kepala Sekolah</option>
+                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -180,13 +182,12 @@
 </div>
 
 <script>
-function editGelombang(id, nama, tgl_mulai, tgl_selesai, biaya_daftar, tahun) {
-    document.getElementById('editForm').action = '{{ url("admin/master/gelombang") }}/' + id;
+function editUser(id, nama, email, hp, role) {
+    document.getElementById('editForm').action = '{{ url("admin/kelola-user") }}/' + id;
     document.getElementById('edit_nama').value = nama;
-    document.getElementById('edit_tgl_mulai').value = tgl_mulai;
-    document.getElementById('edit_tgl_selesai').value = tgl_selesai;
-    document.getElementById('edit_biaya_daftar').value = biaya_daftar;
-    document.getElementById('edit_tahun').value = tahun;
+    document.getElementById('edit_email').value = email;
+    document.getElementById('edit_hp').value = hp;
+    document.getElementById('edit_role').value = role;
     $('#editModal').modal('show');
 }
 </script>

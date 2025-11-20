@@ -25,6 +25,10 @@ class AuthController extends Controller
         $user = Pengguna::where('email', $credentials['email'])->first();
         
         if ($user && password_verify($credentials['password'], $user->password_hash)) {
+            // Cek apakah user aktif
+            if (!$user->aktif) {
+                return back()->withErrors(['email' => 'Akun Anda telah dinonaktifkan. Hubungi administrator.']);
+            }
             // Login dengan guard sesuai role
             $guard = match($user->role) {
                 'pendaftar' => 'pengguna',

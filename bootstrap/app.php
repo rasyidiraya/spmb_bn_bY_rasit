@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
             'role' => \App\Http\Middleware\RoleMiddleware::class,
             'prevent.back' => \App\Http\Middleware\PreventBackHistory::class,
+            'check.active' => \App\Http\Middleware\CheckUserActive::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

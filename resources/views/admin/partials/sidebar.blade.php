@@ -48,6 +48,13 @@
             <span>Master Gelombang</span>
         </a>
     </li>
+    
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('admin.kelola-user') }}">
+            <i class="fas fa-fw fa-users"></i>
+            <span>Kelola User</span>
+        </a>
+    </li>
 
 
 

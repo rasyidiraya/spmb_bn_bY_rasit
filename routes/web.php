@@ -24,7 +24,7 @@ Route::post('/register/resend-otp', [App\Http\Controllers\Auth\OtpController::cl
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Pendaftar routes (protected)
-Route::middleware(['auth:pengguna', 'role:pendaftar', 'prevent.back'])->name('pendaftar.')->group(function () {
+Route::middleware(['auth:pengguna', 'role:pendaftar', 'prevent.back', 'check.active'])->name('pendaftar.')->group(function () {
     Route::get('/home', [PendaftarDashboard::class, 'index'])->name('dashboard');
     
     // Pendaftaran
@@ -44,7 +44,7 @@ Route::middleware(['auth:pengguna', 'role:pendaftar', 'prevent.back'])->name('pe
 });
 
 // Admin routes
-Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'role:admin', 'prevent.back'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'role:admin', 'prevent.back', 'check.active'])->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     
     // Master Data
@@ -54,6 +54,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'role:admin', 
     Route::delete('/master/jurusan/{id}', [App\Http\Controllers\Admin\MasterDataController::class, 'deleteJurusan'])->name('master.jurusan.delete');
     Route::get('/master/gelombang', [App\Http\Controllers\Admin\MasterDataController::class, 'gelombang'])->name('master.gelombang');
     Route::post('/master/gelombang', [App\Http\Controllers\Admin\MasterDataController::class, 'storeGelombang'])->name('master.gelombang.store');
+    Route::put('/master/gelombang/{id}', [App\Http\Controllers\Admin\MasterDataController::class, 'updateGelombang'])->name('master.gelombang.update');
+    Route::delete('/master/gelombang/{id}', [App\Http\Controllers\Admin\MasterDataController::class, 'deleteGelombang'])->name('master.gelombang.delete');
     Route::patch('/master/gelombang/{id}/toggle-status', [App\Http\Controllers\Admin\MasterDataController::class, 'toggleStatusGelombang'])->name('master.gelombang.toggle-status');
     
     // Monitoring
@@ -70,10 +72,17 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'role:admin', 
     
     // Log Aktivitas
     Route::get('/log-aktivitas', [App\Http\Controllers\Admin\LogAktivitasController::class, 'index'])->name('log-aktivitas');
+    
+    // Kelola User
+    Route::get('/kelola-user', [App\Http\Controllers\Admin\KelolaUserController::class, 'index'])->name('kelola-user');
+    Route::post('/kelola-user', [App\Http\Controllers\Admin\KelolaUserController::class, 'store'])->name('kelola-user.store');
+    Route::put('/kelola-user/{id}', [App\Http\Controllers\Admin\KelolaUserController::class, 'update'])->name('kelola-user.update');
+    Route::patch('/kelola-user/{id}/toggle-status', [App\Http\Controllers\Admin\KelolaUserController::class, 'toggleStatus'])->name('kelola-user.toggle-status');
+    Route::delete('/kelola-user/{id}', [App\Http\Controllers\Admin\KelolaUserController::class, 'destroy'])->name('kelola-user.destroy');
 });
 
 // Verifikator Administrasi routes
-Route::prefix('verifikator')->name('verifikator.')->middleware(['auth:verifikator', 'role:verifikator_adm', 'prevent.back'])->group(function () {
+Route::prefix('verifikator')->name('verifikator.')->middleware(['auth:verifikator', 'role:verifikator_adm', 'prevent.back', 'check.active'])->group(function () {
     Route::get('/', [App\Http\Controllers\VerifikatorAdministrasi\VerifikatorController::class, 'index'])->name('index');
     Route::get('/detail/{id}', [App\Http\Controllers\VerifikatorAdministrasi\VerifikatorController::class, 'detail'])->name('detail');
     Route::post('/verifikasi/{id}', [App\Http\Controllers\VerifikatorAdministrasi\VerifikatorController::class, 'verifikasi'])->name('verifikasi');
@@ -86,7 +95,7 @@ Route::prefix('verifikator')->name('verifikator.')->middleware(['auth:verifikato
 });
 
 // Keuangan routes
-Route::prefix('keuangan')->name('keuangan.')->middleware(['auth:keuangan', 'role:keuangan', 'prevent.back'])->group(function () {
+Route::prefix('keuangan')->name('keuangan.')->middleware(['auth:keuangan', 'role:keuangan', 'prevent.back', 'check.active'])->group(function () {
     // Dashboard
     Route::get('/', [App\Http\Controllers\Keuangan\DashboardController::class, 'index'])->name('dashboard');
     
@@ -108,7 +117,7 @@ Route::prefix('keuangan')->name('keuangan.')->middleware(['auth:keuangan', 'role
 });
 
 // Kepala Sekolah routes
-Route::prefix('kepsek')->name('kepsek.')->middleware(['auth:kepsek', 'role:kepsek', 'prevent.back'])->group(function () {
+Route::prefix('kepsek')->name('kepsek.')->middleware(['auth:kepsek', 'role:kepsek', 'prevent.back', 'check.active'])->group(function () {
     Route::get('/', [App\Http\Controllers\Kepsek\DashboardController::class, 'index'])->name('dashboard');
 });
 
